@@ -10,7 +10,9 @@ class GraphWrapper():
 	
 	def __init__(self, portfolio_id = 1):	
 		self.test = True
-		self.portfolio = Portfolio.objects.get(id=1)
+		self.portfolio = Portfolio.objects.get(id=portfolio_id)
+		self.portfolio.duration = 12
+		self.portfolio.save()
 		self.drugs = self.portfolio.drug_set.all()
 		self.graph = None
 
@@ -22,8 +24,9 @@ class GraphWrapper():
 			return self.graph
 
 	def create_graph(self):
-		g = nx.Graph()
+		g = nx.Graph(drugs={}, drug_stages={})
 
+		self.add_graph_attrs(g)
 		self.add_nodes(g)
 		self.add_edges(g)
 		
@@ -45,5 +48,11 @@ class GraphWrapper():
 			for y in g.nodes():
 				if n is not y:
 					g.add_edge(n, y)
+
+
+	def add_graph_attrs(self,g):
+		for d in self.drugs:
+			g.graph['drugs'][d.name] = d
+			g.graph['drug_stages'][d.name] =  d.stage_set.all()
 
 

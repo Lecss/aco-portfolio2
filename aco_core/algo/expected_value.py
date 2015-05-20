@@ -4,6 +4,7 @@ from operator import mul
 
 class ExpectedValue():
 	min_so_far = 0
+	calculated_before = {}
 
 	def __init__(self, G, path, failed=[]):
 		self.years = {}
@@ -21,13 +22,13 @@ class ExpectedValue():
 		self.failed_drugs = [self.G.node[x]["drug"]["name"] for x in failed]
 	
 		#self.set_path = Set() if len(path) == 0 else Set(path)
-
+		
 		for stage in self.path:
 			if stage is "food" or stage is "nest":
 				continue
 			if not self.add_to_year(stage):
 				return None
-
+		
 		#calculate the expected value
 		expected_value = self.expected_value()
 
@@ -92,7 +93,7 @@ class ExpectedValue():
 		complement = []
 		drug = self.G.node[node]["drug"]
 
-		for stage in drug.stage_set.all():
+		for stage in self.G.graph['drug_stages'][drug.name]:
 			complement.append(drug.name + stage.name.strip()) 
 		complement.remove(node)
 		
@@ -109,8 +110,8 @@ class ExpectedValue():
 				if d == "nest" or d == "food":
 					continue
 
-				drug = self.portfolio.drug_set.filter(name=d)[0]
-				cummulated_prob = reduce(mul, [o.fail for o in drug.stage_set.all()])
+				drug = self.G.graph['drugs'][d]
+				cummulated_prob = reduce(mul, [o.fail for o in self.G.graph['drug_stages'][d]])
 				complete_expected += cummulated_prob * drug.profit_year * (self.portfolio.duration - x)
 		
 		return complete_expected + cost
