@@ -8,7 +8,18 @@ class ACO(object):
 
 	alpha = 1
 	betha = 3
-	rho = 0.1
+	rho = 0.5
+
+	ph_on = True
+	heuristics_on = True
+
+	position_heuristic = True
+	ratio_heuristic = True
+
+	dynamic = False
+
+	iterations = 75
+	ants_no = 85
 
 	food = "food"
 	nest = "nest"
@@ -26,5 +37,5 @@ class ACO(object):
 		return
 
 	@abc.abstractmethod
-	def run(self, iterations = 100, ants_no = 100):
+	def run(self, iterations, ants_no):
 		return

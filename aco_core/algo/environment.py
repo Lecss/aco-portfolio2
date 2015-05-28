@@ -8,7 +8,7 @@ from portfolio.models import Portfolio,Drug
 
 class GraphWrapper():
 	
-	def __init__(self, portfolio_id = 1):	
+	def __init__(self, portfolio_id = 3):	
 		self.test = True
 		self.portfolio = Portfolio.objects.get(id=portfolio_id)
 		self.portfolio.duration = 12
